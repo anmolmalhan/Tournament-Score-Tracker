@@ -38,6 +38,7 @@ The canonical, prescriptive record of this app's UI conventions: what to do. Whe
 - Use semantic tokens only: `text-muted-foreground`, `bg-card`, `border-border`, `bg-sidebar`, and friends. No hardcoded hex, rgb, or hsl in classNames or inline styles. The one exception is Satori-rendered OG images, which have no theme context.
 - Dark mode is `next-themes` (`attribute="class"`); pair every `dark:` with a token.
 - Success uses the `--success` token (green-600 in light, green-500 in dark, mirroring `--destructive`): `text-success`, `bg-success/10`, `border-success/20`. Foreground-less, like `--destructive`.
+- Two head-to-head brand colors identify the players on the match tracker: `--player-1` (red) and `--player-2` (cyan/blue), each with a paired `-foreground`. Use the mapped Tailwind utilities (`text-player-1`, `bg-player-2`, `text-player-2-foreground`, and friends); never hardcode the hex/oklch outside `globals.css`. These exist so a two-sided competition reads at a glance; do not repurpose them for generic accents (use `--primary`/`--accent` for that).
 
 ## Layout and landmarks
 

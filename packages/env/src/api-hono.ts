@@ -16,6 +16,12 @@ export const env = createEnv({
       .string()
       .transform((s) => s.split(",").map((v) => v.trim().replace(/\/$/, "")))
       .pipe(z.array(z.url())),
+    // Base URL of the ntfy server used for push notifications. Defaults to the
+    // public instance; override to self-host. Topics are stored per player in the DB.
+    HONO_NTFY_BASE_URL: z
+      .url()
+      .default("https://ntfy.sh")
+      .transform((s) => s.replace(/\/$/, "")),
   },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
@@ -24,6 +30,7 @@ export const env = createEnv({
     HONO_RATE_LIMIT: process.env.HONO_RATE_LIMIT,
     HONO_RATE_LIMIT_WINDOW_MS: process.env.HONO_RATE_LIMIT_WINDOW_MS,
     HONO_TRUSTED_ORIGINS: polyfillServer(process.env.HONO_TRUSTED_ORIGINS, "https://polyfill.url"),
+    HONO_NTFY_BASE_URL: process.env.HONO_NTFY_BASE_URL,
   },
   emptyStringAsUndefined: true,
 })

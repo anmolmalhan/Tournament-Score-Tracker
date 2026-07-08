@@ -12,7 +12,14 @@ import { z } from "zod"
 
 import { errorHandler, globalErrorResponses, jsonError } from "@/lib/error"
 import { rateLimiterMiddleware } from "@/middlewares"
-import { agentsRouter, authRouter, v1Router, waitlistRouter } from "@/routers"
+import {
+  agentsRouter,
+  authRouter,
+  meRouter,
+  tournamentsRouter,
+  v1Router,
+  waitlistRouter,
+} from "@/routers"
 
 const BUILD_VERSION = getBuildVersion()
 
@@ -23,7 +30,7 @@ app.use(
   cors({
     origin: env.HONO_TRUSTED_ORIGINS,
     allowHeaders: ["content-type", "authorization"],
-    allowMethods: ["GET", "OPTIONS", "POST", "PUT"],
+    allowMethods: ["GET", "OPTIONS", "POST", "PUT", "DELETE"],
     exposeHeaders: ["content-length"],
     maxAge: 600,
     credentials: true,
@@ -137,6 +144,8 @@ socket.addEventListener("message", (event) => {
   )
   .route("/agents", agentsRouter)
   .route("/auth", authRouter)
+  .route("/me", meRouter)
+  .route("/tournaments", tournamentsRouter)
   .route("/v1", v1Router)
   .route("/waitlist", waitlistRouter)
   .get(
@@ -153,6 +162,8 @@ socket.addEventListener("message", (event) => {
       defaultOptions: {
         GET: { responses: globalErrorResponses },
         POST: { responses: globalErrorResponses },
+        PUT: { responses: globalErrorResponses },
+        DELETE: { responses: globalErrorResponses },
       },
     }),
   )

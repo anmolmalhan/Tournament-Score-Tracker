@@ -87,7 +87,7 @@ const { data, error } = await unwrap(apiClient.waitlist.$post({ json: { email: "
     sValidator("json", joinSchema, (result) => {
       if (!result.success) {
         throw new ApiError(400, "VALIDATION_ERROR", "Invalid email address", {
-          issues: result.error,
+          issues: (result as { error?: unknown }).error,
         })
       }
     }),

@@ -78,7 +78,14 @@ export function Navbar() {
     setToDashboard(false)
   }, [pathname])
 
-  if (pathname?.startsWith("/console") || pathname?.startsWith("/dashboard")) return null
+  // App routes render their own AppHeader; hide the marketing navbar there.
+  if (
+    pathname?.startsWith("/console") ||
+    pathname?.startsWith("/dashboard") ||
+    pathname?.startsWith("/tournaments") ||
+    pathname?.startsWith("/join")
+  )
+    return null
 
   const navLinks = [
     { href: "/docs", label: "Documentation" },

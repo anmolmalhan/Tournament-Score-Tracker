@@ -15,6 +15,41 @@
       "when": 1782038910452,
       "tag": "0001_waitlist",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783527847153,
+      "tag": "0002_bored_marvex",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1783528861175,
+      "tag": "0003_round_demogoblin",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1783532469524,
+      "tag": "0004_cultured_texas_twister",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1783532495646,
+      "tag": "0005_happy_stature",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1783543542627,
+      "tag": "0006_lying_eternity",
+      "breakpoints": true
     }
   ]
 }

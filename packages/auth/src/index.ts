@@ -23,6 +23,11 @@ import { getCookieDomain, getCookiePrefix } from "@/lib/utils"
 
 const cookieDomain = getCookieDomain(env.HONO_APP_URL)
 const cookiePrefix = getCookiePrefix(env.HONO_APP_URL)
+// When the web app and this API are served from different sites over HTTPS (e.g.
+// separate *.vercel.app subdomains), the session cookie must be SameSite=None and
+// Secure so the browser sends it on cross-site credentialed fetches. Without a
+// shared parent domain (see getCookieDomain), the cookie is host-only on the API.
+const isHttpsDeploy = env.HONO_APP_URL.startsWith("https://")
 
 export type SocialProvider = "github" | "google"
 export type AuthProvider = SocialProvider | "magic-link"
@@ -80,6 +85,12 @@ export const auth = betterAuth({
       crossSubDomainCookies: {
         enabled: true,
         domain: cookieDomain,
+      },
+    }),
+    ...(isHttpsDeploy && {
+      defaultCookieAttributes: {
+        sameSite: "none",
+        secure: true,
       },
     }),
   },

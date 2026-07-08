@@ -7,13 +7,26 @@
  * getCookieDomain("https://api.dev.example.com")         // ".dev.example.com"
  * getCookieDomain("http://localhost:4000")               // undefined
  */
+// Hosts on the Public Suffix List cannot receive a shared parent-domain cookie
+// (e.g. a cookie for ".vercel.app" is rejected by every browser). On these, we
+// fall back to a host-only cookie (see the SameSite=None config in index.ts).
+const PUBLIC_SUFFIX_PARENTS = new Set([
+  "vercel.app",
+  "now.sh",
+  "pages.dev",
+  "netlify.app",
+  "onrender.com",
+])
+
 export function getCookieDomain(url: string): string | undefined {
   try {
     const { hostname } = new URL(url)
     if (hostname === "localhost" || hostname === "127.0.0.1") return undefined
     const parts = hostname.split(".")
     if (parts.length <= 2) return undefined
-    return `.${parts.slice(1).join(".")}`
+    const parent = parts.slice(1).join(".")
+    if (PUBLIC_SUFFIX_PARENTS.has(parent)) return undefined
+    return `.${parent}`
   } catch {
     return undefined
   }

@@ -1,8 +1,9 @@
 // Brand identity for this app: the single source a fork edits to rebrand. web reads it via lib/config.ts.
 export const site = {
-  name: "Monster-match-tracker",
-  description: "Monster-match-tracker is just getting started. Tell its story here.",
-  tagline: "Your tagline, ready when you are.",
+  name: "Match Tracker",
+  description:
+    "A head-to-head win tracker for any tournament or game: Monster, chess, cricket, football, carrom, ludo, or a custom match. First to the target wins.",
+  tagline: "First to the target wins",
   social: {
     github: "",
     x: "",
