@@ -84,7 +84,6 @@ export function Navbar() {
     { href: "/docs", label: "Documentation" },
     { href: "/api/docs", label: "API Docs", external: true },
     { href: "/blog", label: "Blog" },
-    { href: "/hire", label: "Hire" },
   ]
 
   return (
