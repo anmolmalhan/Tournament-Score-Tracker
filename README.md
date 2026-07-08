@@ -1,63 +1,123 @@
-# Match Tracker
+<div align="center">
 
-A head-to-head win tracker for any game or tournament: chess, cricket, carrom,
-Monster, or a custom match. Players sign in with GitHub, create private
-tournaments, invite each other, and every result is confirmed by the other
-player before it counts. Built on [ZeroStarter](https://zerostarter.dev).
+# 🏆 Match Tracker
 
-## How it works
+### Settle it on the scoreboard, not in the group chat.
 
-- **GitHub is the only login.** No email/password, no Google, no guest mode. A
-  player's identity is their GitHub account (username + avatar shown in-app).
-- **Private, invite-only tournaments.** Only invited GitHub users can view or
-  play a tournament; everyone else gets a 403.
-- **Backend-authoritative scores.** The frontend never edits a score. It creates
-  a pending request (win, correction, or reset); the score changes only when
-  another player confirms it. You cannot confirm your own claim.
-- **Permanent history + stats.** Every tournament, match event, and result is
-  stored forever and aggregated into per-user statistics.
-- **ntfy push notifications.** Each user sets one private ntfy topic; the server
-  notifies the other players on a claim, and everyone on confirm / reject / win.
+A head-to-head win tracker for **any** game or tournament: chess, cricket, carrom, FIFA, Monster, or whatever you and your friends are competing at. Sign in with GitHub, invite a friend with a **4-digit code**, and every result is confirmed by the other player before it counts.
 
-## Key files
+<br/>
 
-- `packages/db/src/schema/tournament.ts` - tournaments, members, the permanent
-  event log, and per-user settings
-- `api/hono/src/routers/tournaments.ts` - create/join/invite, claim, and the
-  confirm/reject flow (membership + "not your own claim" checks)
-- `api/hono/src/routers/me.ts` - profile, ntfy settings, and computed stats
-- `api/hono/src/lib/tournament.ts` / `ntfy.ts` - shared queries and push
-- `web/next/src/app/{dashboard,tournaments,join}` - the app pages
-- `web/next/src/components/app/*` - dashboard, tournament view, API hooks
+[![Live](https://img.shields.io/badge/▲_Live_Demo-000000?style=for-the-badge)](https://tournament-score-tracker-web.vercel.app)
+&nbsp;
+[![Next.js](https://img.shields.io/badge/Next.js_16-000000?style=for-the-badge&logo=next.js)](https://nextjs.org)
+[![Hono](https://img.shields.io/badge/Hono-E36002?style=for-the-badge&logo=hono&logoColor=white)](https://hono.dev)
+[![Postgres](https://img.shields.io/badge/Neon_Postgres-00E599?style=for-the-badge&logo=postgresql&logoColor=white)](https://neon.tech)
+[![Bun](https://img.shields.io/badge/Bun-000000?style=for-the-badge&logo=bun&logoColor=white)](https://bun.sh)
 
-## Setup
+<br/>
 
-GitHub OAuth credentials are required. Create an OAuth App at
-`https://github.com/settings/applications/new`:
+<img src="docs/screenshots/dashboard.png" alt="Match Tracker dashboard" width="90%" />
 
-- Homepage URL: `http://localhost:3000`
-- Authorization callback URL: `http://localhost:4000/api/auth/callback/github`
+</div>
 
-Put the values in the root `.env`:
+<br/>
 
+## ✨ Features
+
+- 🔐 **GitHub sign-in only** — your identity is your GitHub account (username + avatar). No passwords, no guest mode.
+- 🎟️ **Invite with a 4-digit code** — no long links to copy; your friend just types the code.
+- 🤝 **Every win is confirmed** — you claim a win, the _other_ player confirms it. You can never confirm your own claim, and no one can edit a score alone.
+- 🔒 **Private tournaments** — only invited GitHub users can view or play. Everyone else is locked out.
+- 📊 **Lifetime stats** — win rate, matches won/lost, tournaments played and won, all tracked per player.
+- 🔔 **Push notifications** — get an [ntfy](https://ntfy.sh) alert when a result needs your confirmation or a tournament is decided.
+- 📱 **Mobile-first** — designed for the phone in your hand while you play.
+- 🗑️ **Full control** — fix miscounts, request a reset, start a rematch, or delete a tournament you own.
+
+<br/>
+
+<div align="center">
+
+|                       Dashboard (mobile)                        |                      Live tournament                      |
+| :-------------------------------------------------------------: | :-------------------------------------------------------: |
+| <img src="docs/screenshots/dashboard-mobile.png" width="280" /> | <img src="docs/screenshots/tournament.png" width="280" /> |
+
+</div>
+
+<br/>
+
+## 🎮 How it works
+
+1. **Create a tournament** — name it, pick the game, and set how many wins take the crown (first to 3, 5, 11, or any number).
+2. **Invite your opponent** — share the **4-digit code**. They sign in with GitHub and type it in.
+3. **Claim your wins** — after each match, the winner taps **"I won this match."**
+4. **Opponent confirms** — the result only counts once the other player confirms it. Reject it if it's wrong.
+5. **First to the target wins** 🏆 — the tournament is frozen, the champion is crowned, and it's saved to both players' stats forever. Rematch anytime.
+
+> **Why confirmation?** The frontend can never change a score on its own. It only creates a _pending request_; the backend applies the change only after the other player approves it. No arguments, no cheating.
+
+<br/>
+
+## 🧱 Tech stack
+
+| Layer             | Tech                                                          |
+| ----------------- | ------------------------------------------------------------- |
+| **Web**           | Next.js 16 (App Router, React 19), Tailwind CSS v4, shadcn/ui |
+| **API**           | Hono, end-to-end typed via RPC                                |
+| **Database**      | PostgreSQL (Neon) + Drizzle ORM                               |
+| **Auth**          | Better Auth (GitHub OAuth)                                    |
+| **Notifications** | ntfy (server-side push)                                       |
+| **Runtime**       | Bun + Turborepo monorepo                                      |
+| **Hosting**       | Vercel (web + API as separate projects)                       |
+
+Built on [ZeroStarter](https://zerostarter.dev).
+
+<br/>
+
+## 🚀 Local development
+
+**Prerequisites:** [Bun](https://bun.sh), and a PostgreSQL database (local Docker or a Neon connection string).
+
+```bash
+# 1. Install
+bun install
+
+# 2. Configure — copy the example and fill in the values
+cp .env.example .env
 ```
-GITHUB_CLIENT_ID=...
+
+Set in `.env`:
+
+```bash
+POSTGRES_URL=postgres://...
+BETTER_AUTH_SECRET=$(openssl rand -base64 32)
+GITHUB_CLIENT_ID=...        # OAuth App, callback http://localhost:4000/api/auth/callback/github
 GITHUB_CLIENT_SECRET=...
 ```
 
-For production, create a second OAuth App whose callback points at the deployed
-API domain (`https://<api-host>/api/auth/callback/github`), and set the same env
-vars (plus `HONO_APP_URL`, `HONO_TRUSTED_ORIGINS`, `NEXT_PUBLIC_API_URL`,
-`NEXT_PUBLIC_APP_URL`) on the Vercel projects.
-
-Optional: `HONO_NTFY_BASE_URL` to point at a self-hosted ntfy (default
-`https://ntfy.sh`).
-
-## Development
-
 ```bash
+# 3. Migrate the database
+bun run db:migrate
+
+# 4. Run it
 bun run dev
 ```
 
-Web on http://localhost:3000, API on http://localhost:4000, API reference at
-http://localhost:4000/api/docs.
+- Web → http://localhost:3000
+- API → http://localhost:4000 · docs at `/api/docs`
+
+<br/>
+
+## 🏗️ Architecture notes
+
+The web app and API deploy as **two separate Vercel projects**. To keep auth cookies **first-party** (so Safari/Chrome third-party-cookie blocking never breaks sign-in), the browser only ever talks to the web origin — Next.js proxies `/api/*` to the API server-side. Scores are **authoritative on the backend**: the client can only create pending requests, and a score changes only after the opponent confirms.
+
+<br/>
+
+<div align="center">
+
+**[▲ Try it live →](https://tournament-score-tracker-web.vercel.app)**
+
+<sub>Made for two brothers who couldn't agree on the score.</sub>
+
+</div>
